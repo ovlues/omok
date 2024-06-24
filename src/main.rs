@@ -30,8 +30,8 @@ fn main() {
             continue;
         } else {
             map[y - 1][x - 1] = turn;
-            if checky_win(&map, x - 1, y - 1) {
-                println!("{}픽 승리!", if turn == 1 { "⚫" } else { "⚪" });
+            if checky_win(&map, y - 1, x - 1) {
+                println!("{}픽 승리!", turn);
                 break;
             }
             turn = if turn == 1 { 2 } else { 1 };
@@ -55,6 +55,25 @@ fn main() {
     println!("게임이 종료되었습니다.");
 }
 
-fn checky_win(map: &[[u8; 15]; 15], x: usize, y: usize) -> bool {
+fn checky_win(map: &[[u8; 15]; 15], x: usize, y: usize) -> bool { // 구현 오류. x자리에 y, y자리에 x를 대입할 것.
+    let turn = map[x][y];
+    if // 역슬래쉬 방향 대각선 체크
+        (x > 1 && x <= 12 && y > 1 && y <= 12 && map[x-1][y-1] == turn && map[x-2][y-2] == turn && map[x+1][x+1] == turn && map[x+2][y+2] == turn) // ooxoo
+        || (x > 2 && x <= 11 && y > 2 && y <= 11 && map[x-1][y-1] == turn && map[x+1][y+1] == turn && map[x+2][y+2] == turn && map[x+3][y+3] == turn) // oxooo
+        || (x <= 10 && y <= 10 && map[x+4][y+4] == turn && map[x+1][y+1] == turn && map[x+2][y+2] == turn && map[x+3][y+3] == turn) // xoooo
+        || (x > 2 && x <= 13 && y > 2 && y <= 13 && map[x-1][y-1] == turn && map[x+1][y+1] == turn && map[x-2][y-2] == turn && map[x-3][y-3] == turn) // oooxo
+        || (x > 3 && x <= 14 && y > 3 && y <= 14 && map[x-1][y-1] == turn && map[x-4][y-4] == turn && map[x-2][y-2] == turn && map[x-3][y-3] == turn) // oooox
+    {
+        return true;
+    } else if // 슬래쉬 방향 대각선 체크
+        (x > 1 && x <= 12 && y > 1 && y <= 12 && map[x-1][y+1] == turn && map[x-2][y+2] == turn && map[x+1][x-1] == turn && map[x+2][y-2] == turn) // ooxoo
+        || (x > 0 && x <= 11 && y >= 2 && y <= 12 && map[x-1][y+1] == turn && map[x+1][y-1] == turn && map[x+2][y-2] == turn && map[x+3][y-3] == turn) // oxooo
+        || (x <= 10 && y >= 4 && map[x+4][y-4] == turn && map[x+1][y-1] == turn && map[x+2][y-2] == turn && map[x+3][y-3] == turn) // xoooo
+        || (x > 2 && x <= 13 && y > 0 && y <= 11 && map[x-1][y+1] == turn && map[x+1][y-1] == turn && map[x-2][y+2] == turn && map[x-3][y+3] == turn) // oooxo
+        || (x > 3 && x <= 14 && y <= 10 && map[x-1][y+1] == turn && map[x-4][y+4] == turn && map[x-2][y+2] == turn && map[x-3][y+3] == turn) // oooox
+    {
+        return true;
+    }
+
     false
 }
